@@ -429,12 +429,12 @@
             <!-- Kontrol Sesi Live -->
             <div class="control-bar">
                 <button class="btn-action" title="Lagu Sebelumnya" onclick="kontrolVideo('prev')"><i data-lucide="skip-back"></i></button>
-                <button class="btn-action" id="play-pause-btn" title="Play" onclick="kontrolVideo('toggle')"><i data-lucide="play"></i></button>
+                <button class="btn-action" id="play-pause-btn" title="Play" onclick="kontrolVideo('toggle')"><i data-lucide="pause"></i></button>
                 <button class="btn-action" title="Stop" onclick="kontrolVideo('stop')"><i data-lucide="square"></i></button>
                 
                 <button class="btn-join" onclick="joinSession()">Join The Live Session!</button>
                 
-                <!-- Tombol Record Baru -->
+                <!-- Tombol Record -->
                 <button class="btn-record" id="rec-btn" onclick="toggleMulaiRekam()">
                     <i data-lucide="mic" style="width: 16px;"></i> <span id="rec-text">Rekam Sesi</span>
                 </button>
@@ -453,7 +453,7 @@
             </div>
         </div>
 
-        <!-- SEKTOR KANES: MOSHPIT SHOUTBOX -->
+        <!-- SEKTOR KANAN: MOSHPIT SHOUTBOX -->
         <div class="right-panel">
             <div class="shoutbox">
                 <div class="shoutbox-header">
@@ -487,7 +487,7 @@
     const firebaseConfig = {
         apiKey: "AIzaSyBFlwXqdXmBFv3phfrzJJVua_1mmbqdMLI",
         authDomain: "a7x-karaoke.firebaseapp.com",
-        databaseURL: "https://a7x-karaoke-default-rtdb.firebaseio.com",
+        databaseURL: "https://a7x-karaoke-default-rtdb.firebaseio.com", 
         projectId: "a7x-karaoke",
         storageBucket: "a7x-karaoke.firebasestorage.app",
         messagingSenderId: "597923188585",
@@ -501,7 +501,6 @@
     const chatRef = database.ref("moshpit_chat");
     const peersRef = database.ref("online_peers");
 
-    // PLAYLIST UTAMA: Menggunakan tautan langsung dari Discord tanpa spasi kosong bawaan
     const a7xPlaylist = [
         { file: "https://cdn.discordapp.com/attachments/1498097093762486334/1514638030781288559/Avenged_Sevenfold_-_So_Far_Away_Karaoke_Version_-_Sing_King_720p_h264.mp4?ex=6a2c1817&is=6a2ac697&hm=376c5e734318c6201e8f46e803c109012baca556707fb64745168e2236e4abcc&", title: "1. So Far Away - Avenged Sevenfold" },
         { file: "https://cdn.discordapp.com/attachments/1498097093762486334/1514639095706685651/Avenged_Sevenfold_-_Seize_the_Day_Karaoke_Instrumental_-_Core_Karaoke_720p_h264.mp4?ex=6a2c1915&is=6a2ac795&hm=04ad29264faeab913197c29b555c31644cfbb192de6b3fc9be25ff668f78048d&", title: "2. Seize The Day - Avenged Sevenfold" },
@@ -588,7 +587,7 @@
         roomRef.on("value", (snapshot) => {
             const data = snapshot.val();
             if (data && videoPlayer) {
-                const targetIdx = a7xPlaylist.findIndex(s => s.file.trim() === data.currentSongFile.trim());
+                const targetIdx = a7xPlaylist.findIndex(s => s.file === data.currentSongFile);
                 if (targetIdx !== -1) currentSongIndex = targetIdx;
 
                 const currentSrc = videoPlayer.getAttribute('src') || "";
@@ -614,7 +613,6 @@
         });
 
         if (isHost) {
-            // Sinkronisasi dipercepat menjadi setiap 1 detik agar transisi panggung makin presisi
             setInterval(() => {
                 if (!videoPlayer.paused) {
                     roomRef.update({ currentTime: videoPlayer.currentTime, timestamp: Date.now() });
@@ -682,21 +680,14 @@
 
     document.getElementById('chat-text').addEventListener('keypress', function (e) { if (e.key === 'Enter') kirimPesan(); });
 
-    // 7. SINKRONISASI LIVE VOICE PEERJS
+    // 7. SINKRONISASI LIVE VOICE PEERJS (KEMBALI KE ASLI / AMAN ANTI DENGING)
     function joinSession() {
         const btnJoin = document.querySelector('.btn-join');
         btnJoin.innerText = "MENGHUBUNGKAN...";
         btnJoin.disabled = true;
 
-        // OPTIMASI MIC: Mematikan filter bawaan browser yang merusak dinamika suara menyanyi
-        navigator.mediaDevices.getUserMedia({ 
-            audio: {
-                echoCancellation: false,   // Matikan peredam gema agar musik tidak terpotong
-                noiseSuppression: false,   // Matikan peredam bising agar suara nada tinggi tidak mendem
-                autoGainControl: false     // Matikan pengatur volume otomatis
-            }, 
-            video: false 
-        })
+        // Mengembalikan setelan original sistemmu agar mic jernih dan tidak memicu feedback loop/denging
+        navigator.mediaDevices.getUserMedia({ audio: true, video: false })
         .then((stream) => {
             localStream = stream;
             myPeer = new Peer();
@@ -743,7 +734,7 @@
         }
     }
 
-    // 8. LOGIKA PEREKAM AUDIO INTERNAL (FIX AUDIO BALANCING MIXER)
+    // 8. LOGIKA PEREKAM AUDIO INTERNAL (BALANCING MUSIK TANPA MERUBAH INTEGRITAS MIC)
     function toggleMulaiRekam() {
         const recBtn = document.getElementById('rec-btn');
         const recText = document.getElementById('rec-text');
@@ -755,38 +746,29 @@
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const dest = audioContext.createMediaStreamDestination();
 
-                // 🎛️ MIXER NODE 1: Booster Volume Suara Mic / Vokal
-                const micGain = audioContext.createGain();
-                micGain.gain.value = 1.6; // Dinaikkan ke 160% agar vokal berada di depan
-
-                // 🎛️ MIXER NODE 2: Redam Volume Musik Instrumen (.mp4)
-                const videoGain = audioContext.createGain();
-                videoGain.gain.value = 0.35; // Diturunkan ke 35% di dalam hasil rekaman agar tidak menutupi vokal
-
+                // Memasukkan suara mic kamu murni tanpa booster penguat yang memicu suara aneh
                 if (localStream) {
                     const micSource = audioContext.createMediaStreamSource(localStream);
-                    micSource.connect(micGain);  // Masuk ke pengatur volume mic
-                    micGain.connect(dest);       // Alirkan ke jalur perekam
+                    micSource.connect(dest);
                 }
 
                 if (videoPlayer) {
-                    // Proteksi agar tidak membuat duplikasi source node pada video player
                     if (!videoPlayer.audioSourceNode) {
                         videoPlayer.audioSourceNode = audioContext.createMediaElementSource(videoPlayer);
                     }
                     
-                    // Hubungkan video ke output default (speaker) agar kalian tetap bisa dengar musik saat menyanyi
+                    // Suara instrumen di HP tetap kencang 100% normal biar enak nyanyinya
                     videoPlayer.audioSourceNode.connect(audioContext.destination); 
                     
-                    // Alirkan suara video ke pengatur redam musik, lalu satukan ke perekam
+                    // 🎛️ KLIP MIXER: Khusus untuk hasil rekaman, volume musik dikecilkan ke 50% (0.5) agar vokal tidak tenggelam
+                    const videoGain = audioContext.createGain();
+                    videoGain.gain.value = 0.5; 
+                    
                     videoPlayer.audioSourceNode.connect(videoGain);  
                     videoGain.connect(dest);       
                 }
 
-                // Paksa browser merekam suara kualitas tinggi tanpa merusak kompresi data (128 kbps)
-                mediaRecorder = new MediaRecorder(dest.stream, {
-                    audioBitsPerSecond: 128000
-                });
+                mediaRecorder = new MediaRecorder(dest.stream);
                 
                 mediaRecorder.ondataavailable = function(e) {
                     if (e.data.size > 0) {
@@ -805,14 +787,14 @@
                     downloadLink.click(); 
                     document.body.removeChild(downloadLink);
                     
-                    alert("Rekaman Berhasil Disimpan! Suara vokal dan musik kini seimbang.");
+                    alert("Rekaman Berhasil Disimpan! Musik otomatis diturunkan 50% di hasil rekaman.");
                 };
 
                 mediaRecorder.start();
                 isRecording = true;
                 recBtn.classList.add('recording');
                 recText.innerText = "Berhenti Rekam";
-                console.log("Perekaman dimulai dengan penyeimbang mixer vokal otomatis.");
+                console.log("Proses perekaman panggung dengan redam instrumen otomatis dimulai...");
             } catch (err) {
                 alert("Browser menolak sistem jahit rekaman: " + err);
             }
@@ -824,7 +806,7 @@
             isRecording = false;
             recBtn.classList.remove('recording');
             recText.innerText = "Rekam Sesi";
-            console.log("Perekaman dihentikan.");
+            console.log("Proses perekaman dihentikan.");
         }
     }
 </script>
