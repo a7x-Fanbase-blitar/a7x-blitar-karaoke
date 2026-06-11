@@ -394,71 +394,208 @@
         © 2026 OFFICIAL A7X FANBASE INDO - DEVELOPED BY THE FALLEN_BLITAR
     </footer>
 
-    <script>
-        // Init Lucide Icons
+  <!-- Pastikan 3 library ini tetap ada di atas tag <script> utamamu -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+
+<script>
+    // 1. INIT LUCIDE ICONS
+    lucide.createIcons();
+
+    // 2. KONFIGURASI FIREBASE (Menggunakan data proyek milikmu)
+    const firebaseConfig = {
+        apiKey: "AIzaSyBFlwXqdXmBFv3phfrzJJVua_1mmbqdMLI",
+        authDomain: "a7x-karaoke.firebaseapp.com",
+        databaseURL: "https://a7x-karaoke-default-rtdb.firebaseio.com", 
+        projectId: "a7x-karaoke",
+        storageBucket: "a7x-karaoke.firebasestorage.app",
+        messagingSenderId: "597923188585",
+        appId: "1:597923188585:web:f1d99cb92ebd67b127b7f8",
+        measurementId: "G-R7KWEQF3ZK"
+    };
+    
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const roomRef = database.ref("live_room");
+    const chatRef = database.ref("moshpit_chat");
+    const peersRef = database.ref("online_peers"); // Jalur database baru untuk ID Mic User
+
+    // 3. DATABASE LAGU SETLIST A7X
+    const a7xPlaylist = [
+        { id: "L1utJu343s0", title: "1. Dear God - Avenged Sevenfold" },
+        { id: "bC9ASPO051M", title: "2. Seize The Day - Avenged Sevenfold" },
+     
+    ];
+
+    const player = document.getElementById('main-player');
+    const playlistContainer = document.getElementById('playlist-container');
+    let isHost = false; 
+
+    // Konfirmasi Peran saat Masuk Web
+    if(confirm("Apakah kamu bertindak sebagai Admin/Host untuk mengontrol jalannya lagu?")) {
+        isHost = true;
+    }
+
+    // 4. RENDER PLAYLIST PANEL
+    function loadPlaylist() {
+        playlistContainer.innerHTML = '';
+        a7xPlaylist.forEach((song, idx) => {
+            const li = document.createElement('li');
+            li.className = `song-item ${idx === 0 ? 'active' : ''}`;
+            li.innerHTML = `<i data-lucide="music-2" style="width:16px; color: #ff3333;"></i> <span>${song.title}</span>`;
+            
+            li.onclick = () => {
+                if (!isHost) {
+                    alert("Hanya Admin/Host room yang punya akses mengganti lagu utama!");
+                    return;
+                }
+                // Kirim sinyal ganti lagu ke Firebase agar semua user ikut berganti video
+                roomRef.set({
+                    currentSongId: song.id,
+                    timestamp: Date.now()
+                });
+            };
+            playlistContainer.appendChild(li);
+        });
         lucide.createIcons();
+    }
 
-        // Database Lagu Setlist A7X & Lokal
-        const a7xPlaylist = [
-            { id: "L03u5eI-Zc8", title: "1. Dear God - Avenged Sevenfold" },
-            { id: "A7H8686aN70", title: "2. A Little Piece of Heaven - Avenged Sevenfold" },
-            { id: "VurhzEYEgG8", title: "3. Afterlife - Avenged Sevenfold" },
-            { id: "94BcbHst-Mw", title: "4. Nightmare - Avenged Sevenfold" }
-        ];
-
-        const player = document.getElementById('main-player');
-        const playlistContainer = document.getElementById('playlist-container');
-
-        // Render Lagu ke Playlist Panel
-        function loadPlaylist() {
-            playlistContainer.innerHTML = '';
-            a7xPlaylist.forEach((song, idx) => {
-                const li = document.createElement('li');
-                li.className = `song-item ${idx === 0 ? 'active' : ''}`;
-                li.innerHTML = `<i data-lucide="music-2" style="width:16px; color: #ff3333;"></i> <span>${song.title}</span>`;
-                
-                li.onclick = () => {
-                    const activeItem = document.querySelector('.song-item.active');
-                    if(activeItem) activeItem.classList.remove('active');
-                    li.classList.add('active');
-                    
-                    // Ganti Video
-                    player.src = `https://www.youtube.com/embed/${song.id}?autoplay=1&enablejsapi=1`;
-                };
-                playlistContainer.appendChild(li);
+    // DENGARKAN PERUBAHAN LAGU DARI FIREBASE (Sinkronisasi Otomatis)
+    roomRef.on("value", (snapshot) => {
+        const data = snapshot.val();
+        if(data) {
+            player.src = `https://www.youtube.com/embed/${data.currentSongId}?autoplay=1&enablejsapi=1`;
+            
+            document.querySelectorAll('.song-item').forEach((item, idx) => {
+                if(a7xPlaylist[idx].id === data.currentSongId) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
             });
-            lucide.createIcons();
         }
+    });
 
-        // Fungsi Simulasi Kirim Pesan Shoutbox
-        function kirimPesan() {
-            const nameInput = document.getElementById('chat-name');
-            const textInput = document.getElementById('chat-text');
-            const chatBox = document.getElementById('chat-box');
+    // 5. AKTIFKAN SHOUTBOX (KIRIM & TERIMA CHAT REAL-TIME)
+    function kirimPesan() {
+        const nameInput = document.getElementById('chat-name');
+        const textInput = document.getElementById('chat-text');
 
-            if(nameInput.value.trim() !== "" && textInput.value.trim() !== "") {
-                const msgDiv = document.createElement('div');
-                msgDiv.className = 'chat-msg';
-                
-                // Jika iseng pake nickname admin
-                const roleClass = nameInput.value.toLowerCase() === 'admin' ? 'admin' : 'user';
-                
-                msgDiv.innerHTML = `<span class="${roleClass}">${nameInput.value}:</span> ${textInput.value}`;
-                chatBox.appendChild(msgDiv);
-                
-                // Reset input teks, nama biarkan saja
-                textInput.value = "";
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }
+        if(nameInput.value.trim() !== "" && textInput.value.trim() !== "") {
+            // Push data pesan baru ke Firebase
+            chatRef.push({
+                name: nameInput.value,
+                text: textInput.value,
+                timestamp: Date.now()
+            });
+            textInput.value = ""; // Kosongkan kolom input pesan
+        } else {
+            alert("Nama dan isi pesan moshpit tidak boleh kosong!");
         }
+    }
 
-        // Fungsi Simulasi Join Live Session
-        function joinSession() {
-            alert("Menghubungkan ke Live Voice Room Fanbase... Pastikan mikrofon kamu aktif!");
+    // Dengarkan kiriman chat baru dari Firebase untuk dirender ke layar
+    chatRef.limitToLast(25).on("child_added", (snapshot) => {
+        const chatBox = document.getElementById('chat-box');
+        const data = snapshot.val();
+        
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'chat-msg';
+        const roleClass = data.name.toLowerCase() === 'admin' ? 'admin' : 'user';
+        
+        msgDiv.innerHTML = `<span class="${roleClass}">${data.name}:</span> ${data.text}`;
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll ke chat paling baru
+    });
+
+    // Bikin tombol Enter di keyboard berfungsi untuk kirim chat
+    document.getElementById('chat-text').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') kirimPesan();
+    });
+
+
+    // 6. SISTEM SINKRONISASI SUARA PEERJS (LIVE VOICE ROOM)
+    let myPeer;
+    let localStream;
+
+    function joinSession() {
+        const btnJoin = document.querySelector('.btn-join');
+        btnJoin.innerText = "MENGHUBUNGKAN...";
+        btnJoin.disabled = true;
+
+        // 1. Minta akses mikrofon perangkat
+        navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+        .then((stream) => {
+            localStream = stream;
+            console.log("Akses mikrofon diberikan.");
+
+            // 2. Inisialisasi PeerJS menggunakan server cloud publik bawaan mereka
+            myPeer = new Peer();
+
+            myPeer.on('open', (userId) => {
+                console.log("ID PeerJS kamu adalah: " + userId);
+                
+                // Daftarkan ID microphone kita ke Firebase online peers agar user lain tahu
+                const myPeerRef = peersRef.push({
+                    peerId: userId,
+                    timestamp: Date.now()
+                });
+
+                // Jika user menutup tab / disconnect, hapus ID nya secara otomatis dari Firebase
+                myPeerRef.onDisconnect().remove();
+
+                btnJoin.innerText = "LIVE VOICE CONNECTED 🔴";
+                btnJoin.style.background = "#00cc44";
+                btnJoin.style.boxShadow = "0 0 15px #00cc44";
+            });
+
+            // 3. Logika Menjawab panggilan suara yang masuk dari komputer teman
+            myPeer.on('call', (call) => {
+                call.answer(localStream); // Balas dengan mengirimkan suara microphone kita
+                call.on('stream', (remoteAudioStream) => {
+                    playAudioStream(remoteAudioStream); // Putar suara teman di device kita
+                });
+            });
+
+            // 4. Logika otomatis menelepon semua ID Microphone lain yang sudah online di room
+            peersRef.on('child_added', (snapshot) => {
+                const data = snapshot.val();
+                // Telepon ID lain, asalkan itu bukan ID milik kita sendiri
+                if (data && data.peerId !== myPeer.id) {
+                    console.log("Menghubungkan suara ke user baru: " + data.peerId);
+                    
+                    const call = myPeer.call(data.peerId, localStream);
+                    call.on('stream', (remoteAudioStream) => {
+                        playAudioStream(remoteAudioStream);
+                    });
+                }
+            });
+        })
+        .catch((err) => {
+            alert("Gagal mengaktifkan voice chat. Mohon izinkan akses mikrofon di browsermu: " + err);
+            btnJoin.innerText = "JOIN THE LIVE SESSION!";
+            btnJoin.disabled = false;
+        });
+    }
+
+    // Fungsi pembantu untuk membuat elemen audio tak terlihat guna memutar suara vokal teman
+    function playAudioStream(stream) {
+        // Cek jika elemen audio stream ini sudah ada agar tidak duplikat suara double
+        const existingAudios = Array.from(document.querySelectorAll('audio'));
+        const alreadyPlaying = existingAudios.some(audio => audio.srcObject && audio.srcObject.id === stream.id);
+        
+        if (!alreadyPlaying) {
+            const audio = document.createElement('audio');
+            audio.srcObject = stream;
+            audio.autoplay = true;
+            document.body.appendChild(audio);
         }
+    }
 
-        // Jalankan saat start
-        loadPlaylist();
-    </script>
+    // Jalankan eksekusi playlist saat pertama dimuat
+    loadPlaylist();
+</script>
 </body>
 </html>
