@@ -12,8 +12,8 @@
     <style>
         :root {
             --bg-color: #050505;
-            --panel-bg: rgba(20, 20, 20, 0.75);
-            --panel-border: rgba(255, 0, 0, 0.15);
+            --panel-bg: rgba(15, 15, 15, 0.75);
+            --panel-border: rgba(255, 0, 0, 0.2);
             --accent-red: #ff0000;
             --accent-glow: #ff2222;
             --text-main: #f5f5f5;
@@ -29,11 +29,7 @@
 
         body {
             background-color: var(--bg-color);
-            background-image: 
-                radial-gradient(circle at 50% 20%, rgba(255, 0, 0, 0.08) 0%, transparent 50%),
-                linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
-            background-size: cover;
-            background-attachment: fixed;
+            position: relative;
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
@@ -41,7 +37,24 @@
             overflow-x: hidden;
         }
 
-        /* Header Style */
+        /* Animasi Background Partikel Bergerak */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 0, 0, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(255, 0, 0, 0.05) 0%, transparent 45%);
+            z-index: -1;
+            animation: pulseBg 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseBg {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.1); opacity: 1; }
+        }
+
+        /* Header Style & Animasi Tulisan Bergerak */
         header {
             text-align: center;
             padding: 30px 20px 10px;
@@ -53,7 +66,7 @@
             color: #fff;
             text-transform: uppercase;
             letter-spacing: 3px;
-            text-shadow: 0 0 10px var(--accent-glow), 0 0 20px var(--accent-glow);
+            animation: neonGlow 2.5s ease-in-out infinite alternate;
         }
 
         header p {
@@ -61,9 +74,21 @@
             font-size: 0.9rem;
             color: var(--text-main);
             letter-spacing: 4px;
-            margin-top: 5px;
+            margin-top: 8px;
             text-transform: uppercase;
             opacity: 0.8;
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+        }
+
+        /* Animasi Gelombang Cahaya Tulisan */
+        @keyframes neonGlow {
+            0% {
+                text-shadow: 0 0 10px rgba(255, 0, 0, 0.5), 0 0 20px rgba(255, 0, 0, 0.3);
+            }
+            100% {
+                text-shadow: 0 0 20px var(--accent-glow), 0 0 40px var(--accent-glow), 0 0 10px rgba(255,255,255,0.5);
+                transform: scale(1.01);
+            }
         }
 
         /* Layout Utama */
@@ -71,10 +96,10 @@
             max-width: 1250px;
             width: 100%;
             margin: 0 auto;
-            padding: 20px;
+            padding: 15px;
             display: grid;
             grid-template-columns: 2fr 1fr;
-            gap: 25px;
+            gap: 20px;
             flex: 1;
         }
 
@@ -93,14 +118,13 @@
             padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.9);
         }
 
         .video-box iframe {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             border: none;
-            pointer-events: auto;
         }
 
         /* Live Controller Button */
@@ -108,20 +132,22 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
             background: var(--panel-bg);
             border: 1px solid var(--panel-border);
             padding: 15px;
             border-radius: 30px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            flex-wrap: wrap;
         }
 
         .btn-action {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--text-main);
-            width: 45px;
-            height: 45px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
@@ -141,12 +167,12 @@
             background: linear-gradient(135deg, #cc0000 0%, #7a0000 100%);
             border: none;
             color: #fff;
-            padding: 0 30px;
-            height: 45px;
-            border-radius: 25px;
+            padding: 0 25px;
+            height: 42px;
+            border-radius: 21px;
             font-family: 'Orbitron', sans-serif;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
             letter-spacing: 1px;
             box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
@@ -155,7 +181,7 @@
         }
 
         .btn-join:hover {
-            transform: scale(1.05);
+            transform: scale(1.03);
             box-shadow: 0 0 25px var(--accent-glow);
             background: linear-gradient(135deg, #ff0000 0%, #990000 100%);
         }
@@ -166,7 +192,8 @@
             border: 1px solid var(--panel-border);
             border-radius: 12px;
             padding: 20px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
         }
 
         .queue-box h3 {
@@ -185,7 +212,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            max-height: 200px;
+            max-height: 220px;
             overflow-y: auto;
         }
 
@@ -219,14 +246,15 @@
 
         .shoutbox {
             background: var(--panel-bg);
-            border: 1px solid rgba(255, 0, 0, 0.3);
+            border: 1px solid rgba(255, 0, 0, 0.25);
             border-radius: 12px;
             padding: 20px;
             display: flex;
             flex-direction: column;
             height: 100%;
-            min-height: 450px;
-            backdrop-filter: blur(10px);
+            min-height: 480px;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             box-shadow: 0 0 20px rgba(255,0,0,0.05);
         }
 
@@ -258,6 +286,7 @@
         .chat-msg {
             font-size: 0.9rem;
             line-height: 1.4;
+            word-break: break-word;
         }
 
         .chat-msg .admin {
@@ -310,12 +339,13 @@
             background: #ff0000;
         }
 
-        /* CUSTOM MODAL SYSTEM (Pop-up Pemilihan Peran) */
+        /* POP-UP MODAL UI */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -326,10 +356,10 @@
         .modal-box {
             background: rgba(15, 15, 15, 0.95);
             border: 2px solid var(--accent-red);
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.4);
             border-radius: 15px;
             padding: 35px;
-            max-width: 450px;
+            max-width: 420px;
             width: 90%;
             text-align: center;
         }
@@ -337,27 +367,28 @@
         .modal-box h2 {
             font-family: 'Cinzel Decorative', serif;
             color: #fff;
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             margin-bottom: 10px;
             text-shadow: 0 0 10px var(--accent-glow);
         }
 
         .modal-box p {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--text-muted);
             margin-bottom: 25px;
+            line-height: 1.4;
         }
 
         .role-btn-group {
             display: flex;
             gap: 15px;
             justify-content: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .btn-role {
             flex: 1;
-            padding: 15px;
+            padding: 14px;
             border-radius: 8px;
             border: 1px solid rgba(255,255,255,0.1);
             background: rgba(255,255,255,0.03);
@@ -369,9 +400,9 @@
         }
 
         .btn-role:hover {
-            background: rgba(255, 0, 0, 0.1);
+            background: rgba(255, 0, 0, 0.15);
             border-color: var(--accent-red);
-            box-shadow: 0 0 15px rgba(255,0,0,0.2);
+            box-shadow: 0 0 15px rgba(255,0,0,0.3);
         }
 
         .admin-auth-area {
@@ -396,10 +427,19 @@
             font-family: 'Orbitron', sans-serif;
         }
 
-        /* Responsive */
-        @media (max-width: 900px) {
-            .container { grid-template-columns: 1fr; }
-            header h1 { font-size: 1.8rem; }
+        /* RESPONSIVE CSS DESIGN UNTUK HP (MOBILE FIRST CONFIG) */
+        @media (max-width: 850px) {
+            .container {
+                grid-template-columns: 1fr;
+                padding: 10px;
+                gap: 15px;
+            }
+            header h1 { font-size: 1.6rem; }
+            header p { font-size: 0.75rem; letter-spacing: 2px; }
+            .shoutbox { min-height: 380px; }
+            .control-bar { padding: 10px; gap: 8px; border-radius: 20px; }
+            .btn-action { width: 38px; height: 38px; }
+            .btn-join { padding: 0 15px; height: 38px; font-size: 0.75rem; }
         }
     </style>
 </head>
@@ -432,7 +472,7 @@
         <!-- SEKTOR KIRI: PLAYER & LIST -->
         <div class="left-panel">
             <div class="video-box">
-                <!-- YouTube Iframe API Player Target Container -->
+                <!-- YouTube Iframe API Container -->
                 <div id="yt-player-placeholder"></div>
             </div>
 
@@ -466,7 +506,7 @@
                 </div>
                 
                 <div class="chat-area" id="chat-box">
-                    <!-- Pesan moshpit akan mengalir real-time di sini -->
+                    <!-- Chat flow -->
                 </div>
 
                 <div class="chat-input-group">
@@ -488,7 +528,7 @@
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
 <script>
-    // 1. DATABASE CONFIG & STATE MANAGEMENT
+    // 1. FIREBASE CONFIG
     const firebaseConfig = {
         apiKey: "AIzaSyBFlwXqdXmBFv3phfrzJJVua_1mmbqdMLI",
         authDomain: "a7x-karaoke.firebaseapp.com",
@@ -518,7 +558,7 @@
     let isShuffled = false;
     let myPeer, localStream;
 
-    // Load YouTube Iframe Player API secara asinkron
+    // Load YouTube Iframe Player API
     const tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
     const firstScriptTag = document.getElementsByTagName('script')[0];
@@ -533,7 +573,8 @@
                 'autoplay': 0,
                 'controls': 1,
                 'enablejsapi': 1,
-                'rel': 0
+                'rel': 0,
+                'iv_load_policy': 3
             },
             events: {
                 'onReady': onPlayerReady,
@@ -542,7 +583,7 @@
         });
     }
 
-    // 2. LOGIKA VALIDASI POPUP PERAN
+    // 2. MODAL VALIDASI PERAN
     function tampilkanAuthAdmin() {
         document.getElementById('auth-panel').style.display = 'flex';
         document.getElementById('admin-pass').focus();
@@ -556,7 +597,7 @@
             document.getElementById('chat-name').disabled = true;
             pilihAkses('admin');
         } else {
-            alert("Sandi Admin Salah! Gagal mendapatkan otoritas panggung.");
+            alert("Sandi Admin Salah!");
         }
     }
 
@@ -571,7 +612,6 @@
         initFirebaseListeners();
     }
 
-    // Bikin tombol Enter di input modal password bekerja
     document.getElementById('admin-pass').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') validasiAdmin();
     });
@@ -587,7 +627,7 @@
             
             li.onclick = () => {
                 if (!isHost) {
-                    alert("Akses Dikunci! Hanya Admin/Host yang berhak mengganti setlist lagu.");
+                    alert("Kunci Otoritas! Hanya Admin yang berhak memindahkan lagu.");
                     return;
                 }
                 currentSongIndex = idx;
@@ -598,7 +638,7 @@
         lucide.createIcons();
     }
 
-    // 4. MANAGEMENT PERINTAH SINKRONISASI VIDEO (FIREBASE)
+    // 4. MANAGEMENT PERINTAH SINKRONISASI VIDEO (FIREBASE NOCookie ANTI-IKLAN)
     function perbaruiKondisiRoom(songId, statusAksi) {
         if (!isHost) return;
         roomRef.set({
@@ -609,30 +649,33 @@
     }
 
     function initFirebaseListeners() {
-        // Mendengarkan Sinkronisasi Video Room
+        // Mendengarkan Perubahan Sinkronisasi Antar Device (Menggunakan Domain NoCookie)
         roomRef.on("value", (snapshot) => {
             const data = snapshot.val();
-            if (data && ytPlayer && typeof ytPlayer.cueVideoById === 'function') {
+            if (data && ytPlayer) {
                 const targetIdx = a7xPlaylist.findIndex(s => s.id === data.currentSongId);
                 if (targetIdx !== -1) currentSongIndex = targetIdx;
 
-                const currentVideoUrl = ytPlayer.getVideoUrl();
-                const currentVideoId = currentVideoUrl ? currentVideoUrl.split('v=')[1] : null;
-
-                if (currentVideoId !== data.currentSongId) {
-                    ytPlayer.cueVideoById(data.currentSongId);
+                // Memaksa penggantian URL Iframe langsung tembak youtube-nocookie
+                const srcSekarang = document.getElementById('yt-player-placeholder').src || "";
+                if (!srcSekarang.includes(data.currentSongId)) {
+                    document.getElementById('yt-player-placeholder').src = `https://www.youtube-nocookie.com/embed/${data.currentSongId}?autoplay=1&enablejsapi=1&rel=0&iv_load_policy=3`;
                 }
 
-                // Jalankan perintah aksi tombol kontrol
-                if (data.action === 'play') {
-                    ytPlayer.playVideo();
-                } else if (data.action === 'pause') {
-                    ytPlayer.pauseVideo();
-                } else if (data.action === 'stop') {
-                    ytPlayer.stopVideo();
-                }
+                // Handler status tombol aksi
+                setTimeout(() => {
+                    try {
+                        if (data.action === 'play') {
+                            if (typeof ytPlayer.playVideo === 'function') ytPlayer.playVideo();
+                        } else if (data.action === 'pause') {
+                            if (typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo();
+                        } else if (data.action === 'stop') {
+                            if (typeof ytPlayer.stopVideo === 'function') ytPlayer.stopVideo();
+                        }
+                    } catch(err) { console.log("Player bising ditahan browser:", err); }
+                }, 800);
 
-                // Sinkronkan highlight list item visual aktif
+                // Update visual list active
                 document.querySelectorAll('.song-item').forEach((item, idx) => {
                     if (idx === currentSongIndex) {
                         item.classList.add('active');
@@ -643,11 +686,10 @@
             }
         });
 
-        // Mendengarkan Obrolan Moshpit Shoutbox Real-time
+        // Chat Listener
         chatRef.limitToLast(30).on("child_added", (snapshot) => {
             const chatBox = document.getElementById('chat-box');
             const data = snapshot.val();
-            
             const msgDiv = document.createElement('div');
             msgDiv.className = 'chat-msg';
             const roleClass = data.name.toLowerCase() === 'admin' ? 'admin' : 'user';
@@ -659,7 +701,7 @@
     }
 
     function onPlayerReady(event) {
-        console.log("YouTube API Player siap dijalankan.");
+        console.log("Player Siap.");
     }
 
     function onPlayerStateChange(event) {
@@ -671,22 +713,19 @@
         }
         lucide.createIcons();
 
-        // Logika Otomatis saat Lagu Habis
-        if (event.data == YT.PlayerState.ENDED) {
-            if (isHost) {
-                if (isLooping) {
-                    perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].id, 'play');
-                } else {
-                    kontrolVideo('next');
-                }
+        if (event.data == YT.PlayerState.ENDED && isHost) {
+            if (isLooping) {
+                perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].id, 'play');
+            } else {
+                kontrolVideo('next');
             }
         }
     }
 
-    // 5. IMPLEMENTASI TOMBOL-TOMBOL KONTROL DI BAWAH VIDEO
+    // 5. IMPLEMENTASI TOMBOL-TOMBOL KONTROL
     function kontrolVideo(aksi) {
         if (!isHost) {
-            alert("Akses Ditolak! Hanya Admin/Host yang bisa mengendalikan tombol pemutar sirkuit utama.");
+            alert("Akses Terkunci! Hanya Admin yang memegang kendali tombol.");
             return;
         }
 
@@ -700,31 +739,27 @@
         } else if (aksi === 'stop') {
             perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].id, 'stop');
         } else if (aksi === 'next') {
-            if (isShuffled) {
-                currentSongIndex = Math.floor(Math.random() * a7xPlaylist.length);
-            } else {
-                currentSongIndex = (currentSongIndex + 1) % a7xPlaylist.length;
-            }
+            currentSongIndex = isShuffled ? Math.floor(Math.random() * a7xPlaylist.length) : (currentSongIndex + 1) % a7xPlaylist.length;
             perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].id, 'play');
         } else if (aksi === 'prev') {
             currentSongIndex = (currentSongIndex - 1 + a7xPlaylist.length) % a7xPlaylist.length;
             perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].id, 'play');
         } else if (aksi === 'loop') {
             isLooping = !isLooping;
-            const loopBtn = document.getElementById('loop-btn');
-            loopBtn.style.borderColor = isLooping ? 'var(--accent-red)' : 'rgba(255,255,255,0.1)';
-            loopBtn.style.boxShadow = isLooping ? '0 0 10px var(--accent-glow)' : 'none';
-            loopBtn.title = isLooping ? "Ulangi Lagu Ini (Aktif)" : "Ulangi Lagu Ini (Mati)";
+            styleBtn('loop-btn', isLooping);
         } else if (aksi === 'shuffle') {
             isShuffled = !isShuffled;
-            const shuffleBtn = document.getElementById('shuffle-btn');
-            shuffleBtn.style.borderColor = isShuffled ? 'var(--accent-red)' : 'rgba(255,255,255,0.1)';
-            shuffleBtn.style.boxShadow = isShuffled ? '0 0 10px var(--accent-glow)' : 'none';
-            shuffleBtn.title = isShuffled ? "Mode Acak (Aktif)" : "Mode Acak (Mati)";
+            styleBtn('shuffle-btn', isShuffled);
         }
     }
 
-    // 6. FUNGSI KIRIM PESAN MOSHPIT SHOUTBOX
+    function styleBtn(id, active) {
+        const btn = document.getElementById(id);
+        btn.style.borderColor = active ? 'var(--accent-red)' : 'rgba(255,255,255,0.1)';
+        btn.style.boxShadow = active ? '0 0 10px var(--accent-glow)' : 'none';
+    }
+
+    // 6. MOSHPIT SHOUTBOX
     function kirimPesan() {
         const nameInput = document.getElementById('chat-name');
         const textInput = document.getElementById('chat-text');
@@ -736,8 +771,6 @@
                 timestamp: Date.now()
             });
             textInput.value = "";
-        } else {
-            alert("Nama dan isi pesan tidak boleh kosong!");
         }
     }
 
@@ -754,16 +787,10 @@
         navigator.mediaDevices.getUserMedia({ audio: true, video: false })
         .then((stream) => {
             localStream = stream;
-            console.log("Akses komponen audio internal aktif.");
-
             myPeer = new Peer();
 
             myPeer.on('open', (userId) => {
-                const myPeerRef = peersRef.push({
-                    peerId: userId,
-                    timestamp: Date.now()
-                });
-
+                const myPeerRef = peersRef.push({ peerId: userId, timestamp: Date.now() });
                 myPeerRef.onDisconnect().remove();
 
                 btnJoin.innerText = "LIVE VOICE CONNECTED 🔴";
@@ -773,23 +800,19 @@
 
             myPeer.on('call', (call) => {
                 call.answer(localStream);
-                call.on('stream', (remoteAudioStream) => {
-                    playAudioStream(remoteAudioStream);
-                });
+                call.on('stream', (remoteStream) => { playAudioStream(remoteStream); });
             });
 
             peersRef.on('child_added', (snapshot) => {
                 const data = snapshot.val();
                 if (data && data.peerId !== myPeer.id) {
                     const call = myPeer.call(data.peerId, localStream);
-                    call.on('stream', (remoteAudioStream) => {
-                        playAudioStream(remoteAudioStream);
-                    });
+                    call.on('stream', (remoteStream) => { playAudioStream(remoteStream); });
                 }
             });
         })
         .catch((err) => {
-            alert("Gagal mengaktifkan voice chat. Izinkan akses mikrofon browser: " + err);
+            alert("Gagal mengaktifkan voice chat. Mohon izinkan mikrofon: " + err);
             btnJoin.innerText = "JOIN THE LIVE SESSION!";
             btnJoin.disabled = false;
         });
@@ -798,7 +821,6 @@
     function playAudioStream(stream) {
         const existingAudios = Array.from(document.querySelectorAll('audio'));
         const alreadyPlaying = existingAudios.some(audio => audio.srcObject && audio.srcObject.id === stream.id);
-        
         if (!alreadyPlaying) {
             const audio = document.createElement('audio');
             audio.srcObject = stream;
