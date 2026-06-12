@@ -33,18 +33,14 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
-
-            /* Lapisan kaca hitam transparan 85% di atas gambar background Deathbat */
             background-image: 
                 linear-gradient(rgba(5, 5, 5, 0.85), rgba(5, 5, 5, 0.85)), 
                 url('https://wallpaperaccess.com/full/1616251.jpg');
-            
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
         }
 
-        /* EFEK BARA API BERGERAK (AMBER FLAME LAYER) */
         body::before {
             content: "";
             position: fixed;
@@ -96,7 +92,6 @@
             100% { text-shadow: 0 0 20px var(--accent-glow), 0 0 40px var(--accent-glow), 0 0 10px rgba(255,255,255,0.5); transform: scale(1.01); }
         }
 
-        /* LOBBY STATION OVERLAY SCREEN */
         .lobby-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -213,7 +208,6 @@
             font-style: italic;
         }
 
-        /* POP-UP MODAL BOX ESTETIK FORMS */
         .form-popup-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -264,6 +258,20 @@
             letter-spacing: 1px;
         }
 
+        .input-field {
+            background: #111;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent-red);
+        }
+
         .form-popup-actions {
             display: flex;
             gap: 10px;
@@ -284,7 +292,6 @@
         }
         .btn-popup-cancel:hover { background: #333; color: #fff; }
 
-        /* STRUKTUR HALAMAN UTAMA */
         .container {
             max-width: 1250px;
             width: 100%;
@@ -544,7 +551,32 @@
         .chat-msg { font-size: 0.9rem; line-height: 1.4; word-break: break-word; }
         .chat-msg .admin { color: #ff3333; font-weight: bold; }
         .chat-msg .user { color: #dddddd; font-weight: bold; }
+        
         .chat-input-group { display: flex; flex-direction: column; gap: 8px; }
+        
+        .btn-send {
+            background: #cc0000;
+            border: none;
+            color: #fff;
+            padding: 10px;
+            border-radius: 6px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.2s;
+        }
+        .btn-send:hover { background: #ff0000; }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            border-top: 1px solid rgba(255,0,0,0.1);
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -617,7 +649,7 @@
 
             <div class="control-bar">
                 <button class="btn-action" title="Lagu Sebelumnya" onclick="kontrolVideo('prev')"><i data-lucide="skip-back"></i></button>
-                <button class="btn-action" id="play-pause-btn" title="Play" onclick="kontrolVideo('toggle')"><i data-lucide="pause"></i></button>
+                <button class="btn-action" id="play-pause-btn" title="Play" onclick="kontrolVideo('toggle')"><i data-lucide="play"></i></button>
                 <button class="btn-action" title="Stop" onclick="kontrolVideo('stop')"><i data-lucide="square"></i></button>
                 
                 <button class="btn-join" onclick="joinSession()">Join The Live Session!</button>
@@ -683,14 +715,14 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
     
-    let roomRef, chatRef, peersRef, presenceRef;
+    let roomRef, chatRef, peersRef, presenceRef, roomRegistryRef;
 
-    // AMAN: Disini kita simpan ID Drive-nya saja secara bersih polosan.
+    // 💀 SINKRONISASI PLAYLIST DENGAN RAW REPOSITORI GITHUB (Keren & Terpusat)
     const a7xPlaylist = [
-        { driveId: "Dear_God.mp4", title: "1. Dear God - Avenged Sevenfold" },
-        { driveId: "seize_the_day.mp4", title: "2. Seize The Day - Avenged Sevenfold" },
-        { driveId: "so_far_away.mp4", title: "3. So Far Away - Avenged Sevenfold" },
-        { driveId: "tension.mp4", title: "4. Tension - Avenged Sevenfold" }
+        { file: "Dear_God.mp4", title: "1. Dear God - Avenged Sevenfold" },
+        { file: "seize_the_day.mp4", title: "2. Seize The Day - Avenged Sevenfold" },
+        { file: "so_far_away.mp4", title: "3. So Far Away - Avenged Sevenfold" },
+        { file: "tension.mp4", title: "4. Tension - Avenged Sevenfold" }
     ];
 
     let currentSongIndex = 0;
@@ -709,13 +741,13 @@
     let userProfileName = ""; 
     let tempTargetPassword = ""; 
 
-    // 🔮 RUNTIME ENGINE CONVERTER: bypass proxy raw 'allorigins' + target sirkuit '/videoplayback'
-    function sirkuitAntiCors(id) {
-        let streamUrl = "https://drive.google.com/videoplayback?id=" + id + "&export=download";
-        return "https://api.allorigins.win/raw?url=" + encodeURIComponent(streamUrl);
+    // 🔮 RUNTIME ENGINE CONVERTER: Fix mengarah ke akun GitHub a7x-Fanbase-blitar
+    function sirkuitAntiCors(fileName) {
+        return "https://raw.githubusercontent.com/a7x-Fanbase-blitar/a7x-blitar-karaoke/main/" + fileName;
     }
 
-    videoPlayer.src = sirkuitAntiCors(a7xPlaylist[0].driveId);
+    // Set awal ke lagu pertama saat load halaman
+    videoPlayer.src = sirkuitAntiCors(a7xPlaylist[0].file);
 
     function initLobbyRealtimeListener() {
         database.ref("rooms_registry").on("value", (snapshot) => {
@@ -776,10 +808,15 @@
         document.getElementById('chat-name').value = userProfileName;
         document.getElementById('chat-name').disabled = true;
 
-        database.ref("rooms_registry/" + currentRoomID).set({
+        // Bikin registry room lobi utama
+        roomRegistryRef = database.ref("rooms_registry/" + currentRoomID);
+        roomRegistryRef.set({
             password: roomPassword,
             createdAt: Date.now()
         });
+
+        // FIX ANTI ROOM DUMMY: Jika Host DC/keluar tab browser, hapus room dari lobi secara berkala
+        roomRegistryRef.onDisconnect().remove();
 
         tutupModalKreasiRoom();
         masukHalamanSesiUtama();
@@ -837,17 +874,17 @@
             li.onclick = () => {
                 if (!isHost) { alert("Kunci Otoritas! Hanya Pembuat Room yang berhak memindahkan lagu."); return; }
                 currentSongIndex = idx;
-                perbaruiKondisiRoom(a7xPlaylist[idx].driveId, 'play');
+                perbaruiKondisiRoom(a7xPlaylist[idx].file, 'play');
             };
             playlistContainer.appendChild(li);
         });
         lucide.createIcons();
     }
 
-    function perbaruiKondisiRoom(songDriveId, statusAksi) {
+    function perbaruiKondisiRoom(songFile, statusAksi) {
         if (!isHost) return;
         roomRef.set({
-            currentSongFile: songDriveId,
+            currentSongFile: songFile,
             action: statusAksi,
             currentTime: videoPlayer.currentTime,
             timestamp: Date.now()
@@ -858,10 +895,9 @@
         roomRef.on("value", (snapshot) => {
             const data = snapshot.val();
             if (data && videoPlayer) {
-                const targetIdx = a7xPlaylist.findIndex(s => s.driveId === data.currentSongFile);
+                const targetIdx = a7xPlaylist.findIndex(s => s.file === data.currentSongFile);
                 if (targetIdx !== -1) currentSongIndex = targetIdx;
 
-                // Memaksa konversi link streaming rahasia per-room via proxy runtime
                 const linkHasilInject = sirkuitAntiCors(data.currentSongFile);
                 const currentSrc = videoPlayer.getAttribute('src') || "";
                 
@@ -908,7 +944,8 @@
                     roomRef.update({ currentTime: videoPlayer.currentTime, timestamp: Date.now() });
                 }
             }, 1000);
-            database.ref("rooms_registry/" + currentRoomID).onDisconnect().remove();
+            
+            // Hapus seluruh jejak data room dari Firebase bila host menutup panggung
             database.ref("multi_rooms/" + currentRoomID).onDisconnect().remove();
         }
 
@@ -930,22 +967,22 @@
 
     videoPlayer.onended = () => {
         if (isHost) {
-            if (isLooping) { perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].driveId, 'play'); } else { kontrolVideo('next'); }
+            if (isLooping) { perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].file, 'play'); } else { kontrolVideo('next'); }
         }
     };
 
     function kontrolVideo(aksi) {
         if (!isHost) { alert("Akses Terkunci! Hanya Roomaster yang memegang kendali tombol."); return; }
         if (aksi === 'toggle') {
-            if (videoPlayer.paused) { perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].driveId, 'play'); } else { perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].driveId, 'pause'); }
+            if (videoPlayer.paused) { perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].file, 'play'); } else { perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].file, 'pause'); }
         } else if (aksi === 'stop') {
-            perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].driveId, 'stop');
+            perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].file, 'stop');
         } else if (aksi === 'next') {
             currentSongIndex = isShuffled ? Math.floor(Math.random() * a7xPlaylist.length) : (currentSongIndex + 1) % a7xPlaylist.length;
-            perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].driveId, 'play');
+            perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].file, 'play');
         } else if (aksi === 'prev') {
             currentSongIndex = (currentSongIndex - 1 + a7xPlaylist.length) % a7xPlaylist.length;
-            perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].driveId, 'play');
+            perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].file, 'play');
         } else if (aksi === 'loop') {
             isLooping = !isLooping; styleBtn('loop-btn', isLooping);
         } else if (aksi === 'shuffle') {
@@ -968,7 +1005,6 @@
         }
     }
 
-    // Sambungkan fungsi tombol kirim aslinya
     function kirimPesan() { chatKirim(); }
     document.getElementById('chat-text').addEventListener('keypress', function (e) { if (e.key === 'Enter') chatKirim(); });
 
