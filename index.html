@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A7X Fanbase Karaoke - Live Station</title>
-    <!-- Font Metal / Gothic dari Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Orbitron:wght@500;700&family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
-    <!-- Lucide Icons -->
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/umd/lucide.min.js"></script>
     
     <style>
@@ -51,21 +49,18 @@
             content: "";
             position: fixed;
             bottom: -50px; left: -50px; right: -50px; top: -50px;
-            /* Membuat ilusi lidah kobaran api vertikal abstrak */
             background: linear-gradient(0deg, rgba(230, 0, 0, 0.18) 0%, rgba(255, 68, 0, 0.06) 40%, transparent 80%);
             z-index: -1;
-            mix-blend-mode: screen; /* Membuat pendaran apinya menyala menyatu di atas gambar */
+            mix-blend-mode: screen;
             animation: burnFlames 5s ease-in-out infinite alternate, moveUp 12s linear infinite;
             opacity: 0.85;
         }
 
-        /* Efek Denyut Membara */
         @keyframes burnFlames {
             0% { opacity: 0.6; transform: scale(1) skewX(-2deg); filter: blur(4px); }
             100% { opacity: 0.9; transform: scale(1.05) skewX(2deg); filter: blur(6px); }
         }
 
-        /* Efek Aliran Bara Api Naik Ke Atas */
         @keyframes moveUp {
             0% { background-position-y: 0px; }
             100% { background-position-y: 800px; }
@@ -101,6 +96,195 @@
             100% { text-shadow: 0 0 20px var(--accent-glow), 0 0 40px var(--accent-glow), 0 0 10px rgba(255,255,255,0.5); transform: scale(1.01); }
         }
 
+        /* LOBBY STATION OVERLAY SCREEN */
+        .lobby-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 5, 5, 0.96);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            transition: opacity 0.4s ease;
+        }
+
+        .lobby-box {
+            background: rgba(15, 15, 15, 0.95);
+            border: 2px solid var(--panel-border);
+            box-shadow: 0 0 40px rgba(255, 0, 0, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .lobby-box h2 {
+            font-family: 'Cinzel Decorative', serif;
+            color: #fff;
+            font-size: 1.6rem;
+            text-align: center;
+            text-shadow: 0 0 10px var(--accent-glow);
+            border-bottom: 1px solid rgba(255,0,0,0.3);
+            padding-bottom: 10px;
+        }
+
+        .lobby-list-container {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .room-item-btn {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 6px;
+            padding: 14px;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .room-item-btn:hover {
+            border-color: var(--accent-red);
+            background: rgba(255,0,0,0.1);
+            box-shadow: 0 0 10px rgba(255,0,0,0.2);
+        }
+
+        .room-item-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+        }
+
+        .room-item-name {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+        }
+
+        .room-item-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .btn-create-room {
+            background: linear-gradient(135deg, #cc0000 0%, #7a0000 100%);
+            border: none;
+            color: #fff;
+            padding: 14px;
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(255,0,0,0.3);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-create-room:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 25px var(--accent-glow);
+            background: linear-gradient(135deg, #ff0000 0%, #990000 100%);
+        }
+
+        .empty-lobby-text {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            padding: 20px 0;
+            font-style: italic;
+        }
+
+        /* POP-UP MODAL BOX ESTETIK FORMS */
+        .form-popup-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999999;
+        }
+
+        .form-popup-box {
+            background: rgba(20, 20, 20, 0.98);
+            border: 1px solid var(--accent-red);
+            box-shadow: 0 0 30px rgba(255,0,0,0.3);
+            border-radius: 12px;
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-popup-box h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: #fff;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255,0,0,0.2);
+            padding-bottom: 8px;
+            text-align: center;
+        }
+
+        .form-popup-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-popup-group label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .form-popup-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .btn-popup-primary {
+            flex: 1; background: #cc0000; border: none; color: #fff; padding: 12px;
+            border-radius: 6px; font-family: 'Orbitron', sans-serif; font-weight: bold;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: background 0.2s;
+        }
+        .btn-popup-primary:hover { background: #ff0000; }
+
+        .btn-popup-cancel {
+            background: #222; border: 1px solid rgba(255,255,255,0.1); color: #ccc; padding: 12px 18px;
+            border-radius: 6px; font-family: 'Orbitron', sans-serif; font-weight: bold;
+            cursor: pointer; text-transform: uppercase; transition: all 0.2s;
+        }
+        .btn-popup-cancel:hover { background: #333; color: #fff; }
+
+        /* STRUKTUR HALAMAN UTAMA */
         .container {
             max-width: 1250px;
             width: 100%;
@@ -268,7 +452,55 @@
             box-shadow: inset 0 0 10px rgba(255, 0, 0, 0.2);
         }
 
-        .right-panel { display: flex; flex-direction: column; }
+        .right-panel { display: flex; flex-direction: column; gap: 20px; }
+
+        .members-box {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 0, 0, 0.25);
+            border-radius: 12px;
+            padding: 15px 20px;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+        }
+
+        .members-box h4 {
+            font-family: 'Orbitron', sans-serif;
+            color: #fff;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .members-badge-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            max-height: 80px;
+            overflow-y: auto;
+        }
+
+        .member-badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #ddd;
+        }
+
+        .member-badge.admin-tag {
+            border-color: var(--accent-red);
+            background: rgba(255, 0, 0, 0.15);
+            color: #fff;
+            font-weight: bold;
+        }
 
         .shoutbox {
             background: var(--panel-bg);
@@ -277,8 +509,8 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
-            height: 100%;
-            min-height: 480px;
+            flex: 1;
+            min-height: 380px;
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             box-shadow: 0 0 20px rgba(255,0,0,0.05);
@@ -313,102 +545,61 @@
         .chat-msg .admin { color: #ff3333; font-weight: bold; }
         .chat-msg .user { color: #dddddd; font-weight: bold; }
         .chat-input-group { display: flex; flex-direction: column; gap: 8px; }
-
-        .input-field {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 6px;
-            padding: 10px 15px;
-            color: #fff;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-
-        .input-field:focus { outline: none; border-color: var(--accent-red); box-shadow: 0 0 8px rgba(255,0,0,0.3); }
-
-        .btn-send {
-            background: #cc0000; border: none; color: #fff; padding: 10px; border-radius: 6px;
-            font-family: 'Orbitron', sans-serif; font-weight: bold; cursor: pointer;
-            letter-spacing: 1px; text-transform: uppercase; transition: background 0.2s;
-        }
-        .btn-send:hover { background: #ff0000; }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.94);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.4s ease;
-        }
-
-        .modal-box {
-            background: rgba(12, 12, 12, 0.96);
-            border: 2px solid var(--accent-red);
-            box-shadow: 0 0 35px rgba(255, 0, 0, 0.4);
-            border-radius: 15px;
-            padding: 35px;
-            max-width: 420px;
-            width: 90%;
-            text-align: center;
-        }
-
-        .modal-box h2 {
-            font-family: 'Cinzel Decorative', serif;
-            color: #fff;
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px var(--accent-glow);
-        }
-
-        .modal-box p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.4; }
-        .role-btn-group { display: flex; gap: 15px; justify-content: center; margin-bottom: 10px; }
-
-        .btn-role {
-            flex: 1; padding: 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(255,255,255,0.03); color: #fff; font-family: 'Orbitron', sans-serif;
-            font-weight: bold; cursor: pointer; transition: all 0.3s ease;
-        }
-        .btn-role:hover { background: rgba(255, 0, 0, 0.15); border-color: var(--accent-red); box-shadow: 0 0 15px rgba(255,0,0,0.3); }
-        .admin-auth-area { display: none; flex-direction: column; gap: 10px; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
-
-        footer {
-            text-align: center; padding: 20px; font-size: 0.75rem; color: var(--text-muted); letter-spacing: 1px;
-            text-transform: uppercase; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 20px; font-family: 'Orbitron', sans-serif;
-        }
-
-        @media (max-width: 850px) {
-            .container { grid-template-columns: 1fr; padding: 10px; gap: 15px; }
-            header h1 { font-size: 1.6rem; }
-            header p { font-size: 0.75rem; letter-spacing: 2px; }
-            .shoutbox { min-height: 380px; }
-            .control-bar { padding: 10px; gap: 8px; border-radius: 20px; }
-            .btn-action { width: 38px; height: 38px; }
-            .btn-join { padding: 0 15px; height: 38px; font-size: 0.75rem; }
-            .btn-record { height: 38px; font-size: 0.75rem; padding: 0 12px; }
-        }
     </style>
 </head>
 <body>
 
-    <!-- POPUP MODAL PILIH PERAN -->
-    <div class="modal-overlay" id="role-modal">
-        <div class="modal-box">
-            <h2>Pilih Peran Sesi</h2>
-            <p>Silakan tentukan identitas masukmu untuk panggung virtual Deathbat Blitar Raya malam ini.</p>
+    <div class="lobby-overlay" id="lobby-screen">
+        <div class="lobby-box">
+            <h2>Lobby Station - Virtual Stage</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-top: -10px;">
+                Silakan buat panggung karaoke baru atau bergabung ke room aktif yang tersedia di bawah ini.
+            </p>
             
-            <div class="role-btn-group">
-                <button class="btn-role" onclick="pilihAkses('member')">🤘 MEMBER</button>
-                <button class="btn-role" onclick="tampilkanAuthAdmin()">💀 ADMIN / HOST</button>
+            <div class="lobby-list-container" id="lobby-list-view">
+                <div class="empty-lobby-text">Memuat daftar room aktif...</div>
             </div>
 
-            <div class="admin-auth-area" id="auth-panel">
-                <input type="password" id="admin-pass" class="input-field" placeholder="Masukkan Password Admin...">
-                <button class="btn-send" style="padding: 12px;" onclick="validasiAdmin()">Verifikasi Masuk</button>
+            <button class="btn-create-room" onclick="bukaModalKreasiRoom()">💀 BUAT ROOM KARAOKE BARU</button>
+        </div>
+    </div>
+
+    <div class="form-popup-overlay" id="modal-buat-room">
+        <div class="form-popup-box">
+            <h3>Buat Panggung Baru</h3>
+            <div class="form-popup-group">
+                <label>Nama / Nickname Kamu</label>
+                <input type="text" id="input-host-profile" class="input-field" placeholder="Ketik namamu...">
+            </div>
+            <div class="form-popup-group">
+                <label>ID / Nama Room</label>
+                <input type="text" id="input-host-roomid" class="input-field" placeholder="Contoh: blitar7x...">
+            </div>
+            <div class="form-popup-group">
+                <label>Password Kunci Sesi</label>
+                <input type="text" id="input-host-password" class="input-field" value="123">
+            </div>
+            <div class="form-popup-actions">
+                <button class="btn-popup-cancel" onclick="tutupModalKreasiRoom()">Batal</button>
+                <button class="btn-popup-primary" onclick="eksekusiBuatRoomBaru()">Gass Buat!</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-popup-overlay" id="modal-gabung-room">
+        <div class="form-popup-box">
+            <h3>Masuk Panggung <span id="label-target-roomname" style="color:var(--accent-red)"></span></h3>
+            <div class="form-popup-group">
+                <label>Nama / Nickname Kamu</label>
+                <input type="text" id="input-member-profile" class="input-field" placeholder="Ketik namamu...">
+            </div>
+            <div class="form-popup-group">
+                <label>Masukkan Password Kunci</label>
+                <input type="password" id="input-member-password" class="input-field" placeholder="Ketik password room...">
+            </div>
+            <div class="form-popup-actions">
+                <button class="btn-popup-cancel" onclick="tutupModalGabungRoom()">Batal</button>
+                <button class="btn-popup-primary" onclick="eksekusiGabungKeRoom()">Masuk Sesi</button>
             </div>
         </div>
     </div>
@@ -419,14 +610,11 @@
     </header>
 
     <div class="container">
-        <!-- SEKTOR KIRI: PLAYER & LIST -->
         <div class="left-panel">
             <div class="video-box">
-                <!-- HTML5 Offline Video Player -->
                 <video id="offline-player" playsinline crossorigin="anonymous"></video>
             </div>
 
-            <!-- Kontrol Sesi Live -->
             <div class="control-bar">
                 <button class="btn-action" title="Lagu Sebelumnya" onclick="kontrolVideo('prev')"><i data-lucide="skip-back"></i></button>
                 <button class="btn-action" id="play-pause-btn" title="Play" onclick="kontrolVideo('toggle')"><i data-lucide="pause"></i></button>
@@ -434,7 +622,6 @@
                 
                 <button class="btn-join" onclick="joinSession()">Join The Live Session!</button>
                 
-                <!-- Tombol Record -->
                 <button class="btn-record" id="rec-btn" onclick="toggleMulaiRekam()">
                     <i data-lucide="mic" style="width: 16px;"></i> <span id="rec-text">Rekam Sesi</span>
                 </button>
@@ -444,25 +631,24 @@
                 <button class="btn-action" title="Lagu Berikutnya" onclick="kontrolVideo('next')"><i data-lucide="skip-forward"></i></button>
             </div>
 
-            <!-- Daftar Antrean Lagu -->
             <div class="queue-box">
                 <h3>Live Queue / Playlist</h3>
-                <ul class="song-list" id="playlist-container">
-                    <!-- Ditangani via JS -->
-                </ul>
+                <ul class="song-list" id="playlist-container"></ul>
             </div>
         </div>
 
-        <!-- SEKTOR KANAN: MOSHPIT SHOUTBOX -->
         <div class="right-panel">
+            <div class="members-box">
+                <h4><i data-lucide="users" style="width: 15px; color:#ff3333;"></i> Crew Online In Room</h4>
+                <div class="members-badge-list" id="room-users-view"></div>
+            </div>
+
             <div class="shoutbox">
                 <div class="shoutbox-header">
                     <i data-lucide="message-square" style="width: 18px; color: #ff3333;"></i> Moshpit Shoutbox
                 </div>
                 
-                <div class="chat-area" id="chat-box">
-                    <!-- Chat flow -->
-                </div>
+                <div class="chat-area" id="chat-box"></div>
 
                 <div class="chat-input-group">
                     <input type="text" id="chat-name" class="input-field" placeholder="Nama / Nickname...">
@@ -477,7 +663,6 @@
         © 2026 OFFICIAL A7X FANBASE INDO - DEVELOPED BY THE FALLEN_BLITAR
     </footer>
 
-<!-- JavaScript SDK & Libraries -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
@@ -497,15 +682,15 @@
     
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
-    const roomRef = database.ref("live_room");
-    const chatRef = database.ref("moshpit_chat");
-    const peersRef = database.ref("online_peers");
+    
+    let roomRef, chatRef, peersRef, presenceRef;
 
+    // AMAN: Disini kita simpan ID Drive-nya saja secara bersih polosan.
     const a7xPlaylist = [
-        { file: "http://karaoke.gojapantogether.biz.id/so_far_away.mp4", title: "1. So Far Away - Avenged Sevenfold" },
-        { file: "http://karaoke.gojapantogether.biz.id/Seize_The_Day.mp4", title: "2. Seize The Day - Avenged Sevenfold" },
-        { file: "http://karaoke.gojapantogether.biz.id/Dear_God.mp4", title: "3. Dear God - Avenged Sevenfold" },
-          { file: "http://karaoke.gojapantogether.biz.id/tension.mp4", title: "3. tension - Avenged Sevenfold" }
+        { driveId: "https://files.catbox.moe/jbbd98.mp4", title: "1. Dear God - Avenged Sevenfold" },
+        { driveId: "https://files.catbox.moe/og84o2.mp4", title: "2. Seize The Day - Avenged Sevenfold" },
+        { driveId: "https://files.catbox.moe/tho9kt.mp4", title: "3. So Far Away - Avenged Sevenfold" },
+        { driveId: "https://files.catbox.moe/p8x4fe.mp4", title: "4. Tension - Avenged Sevenfold" }
     ];
 
     let currentSongIndex = 0;
@@ -519,39 +704,128 @@
     let recordedChunks = [];
     let isRecording = false;
 
-    videoPlayer.src = a7xPlaylist[0].file;
+    let currentRoomID = "";
+    let roomPassword = "";
+    let userProfileName = ""; 
+    let tempTargetPassword = ""; 
 
-    // 2. MODAL VALIDASI PERAN
-    function tampilkanAuthAdmin() {
-        document.getElementById('auth-panel').style.display = 'flex';
-        document.getElementById('admin-pass').focus();
+    // 🔮 RUNTIME ENGINE CONVERTER: bypass proxy raw 'allorigins' + target sirkuit '/videoplayback'
+    function sirkuitAntiCors(id) {
+        let streamUrl = "https://drive.google.com/videoplayback?id=" + id + "&export=download";
+        return "https://api.allorigins.win/raw?url=" + encodeURIComponent(streamUrl);
     }
 
-    function validasiAdmin() {
-        const pass = document.getElementById('admin-pass').value;
-        if (pass === 'a7x2026') {
-            isHost = true;
-            document.getElementById('chat-name').value = "Admin";
-            document.getElementById('chat-name').disabled = true;
-            pilihAkses('admin');
-        } else {
-            alert("Sandi Admin Salah!");
-        }
+    videoPlayer.src = sirkuitAntiCors(a7xPlaylist[0].driveId);
+
+    function initLobbyRealtimeListener() {
+        database.ref("rooms_registry").on("value", (snapshot) => {
+            const listView = document.getElementById("lobby-list-view");
+            listView.innerHTML = "";
+            
+            const roomsData = snapshot.val();
+            if (!roomsData) {
+                listView.innerHTML = `<div class="empty-lobby-text">Belum ada panggung aktif. Jadilah Roomaster pertama!</div>`;
+                return;
+            }
+
+            Object.keys(roomsData).forEach((roomName) => {
+                const roomObj = roomsData[roomName];
+                const btn = document.createElement("div");
+                btn.className = "room-item-btn";
+                btn.innerHTML = `
+                    <div class="room-item-info">
+                        <span class="room-item-name">🤘 ROOM: ${roomName.toUpperCase()}</span>
+                        <span class="room-item-meta">Terbuka untuk umum • Terkunci 🔐</span>
+                    </div>
+                    <i data-lucide="chevron-right" style="width:18px; color:var(--accent-red);"></i>
+                `;
+                btn.onclick = () => { bukaModalGabungRoom(roomName, roomObj.password); };
+                listView.appendChild(btn);
+            });
+            lucide.createIcons();
+        });
     }
 
-    function pilihAkses(peran) {
-        document.getElementById('role-modal').style.opacity = '0';
-        setTimeout(() => { document.getElementById('role-modal').style.display = 'none'; }, 400);
+    window.onload = () => {
         lucide.createIcons();
+        initLobbyRealtimeListener();
+    };
+
+    function bukaModalKreasiRoom() {
+        document.getElementById("modal-buat-room").style.display = "flex";
+        document.getElementById("input-host-profile").focus();
+    }
+    function tutupModalKreasiRoom() { document.getElementById("modal-buat-room").style.display = "none"; }
+
+    function eksekusiBuatRoomBaru() {
+        const profil = document.getElementById("input-host-profile").value.trim();
+        const roomid = document.getElementById("input-host-roomid").value.trim();
+        const sandi = document.getElementById("input-host-password").value.trim();
+
+        if (roomid === "") { alert("ID/Nama Room wajib diisi!"); return; }
+        let idBersih = roomid.toLowerCase().replace(/[^a-z0-9]/g, "");
+        if (idBersih === "") { alert("ID Room hanya boleh berupa huruf dan angka!"); return; }
+
+        userProfileName = profil !== "" ? profil : "Roomaster";
+        userProfileName = "Admin (" + userProfileName + ")";
+        
+        isHost = true;
+        currentRoomID = idBersih;
+        roomPassword = sandi !== "" ? sandi : "123";
+
+        document.getElementById('chat-name').value = userProfileName;
+        document.getElementById('chat-name').disabled = true;
+
+        database.ref("rooms_registry/" + currentRoomID).set({
+            password: roomPassword,
+            createdAt: Date.now()
+        });
+
+        tutupModalKreasiRoom();
+        masukHalamanSesiUtama();
+    }
+
+    function bukaModalGabungRoom(targetRoomName, correctPassword) {
+        currentRoomID = targetRoomName;
+        tempTargetPassword = correctPassword;
+        document.getElementById("label-target-roomname").innerText = targetRoomName.toUpperCase();
+        document.getElementById("modal-gabung-room").style.display = "flex";
+        document.getElementById("input-member-profile").focus();
+    }
+    function tutupModalGabungRoom() { document.getElementById("modal-gabung-room").style.display = "none"; }
+
+    function eksekusiGabungKeRoom() {
+        const profil = document.getElementById("input-member-profile").value.trim();
+        const sandi = document.getElementById("input-member-password").value.trim();
+
+        if (sandi !== tempTargetPassword) { alert("Password Kunci Sesi Salah!"); return; }
+
+        userProfileName = profil !== "" ? profil : "Crew_" + Math.floor(Math.random() * 900 + 100);
+        isHost = false;
+        roomPassword = tempTargetPassword;
+        document.getElementById('chat-name').value = userProfileName;
+
+        tutupModalGabungRoom();
+        masukHalamanSesiUtama();
+    }
+
+    function masukHalamanSesiUtama() {
+        roomRef = database.ref("multi_rooms/" + currentRoomID + "/live_room");
+        chatRef = database.ref("multi_rooms/" + currentRoomID + "/moshpit_chat");
+        peersRef = database.ref("multi_rooms/" + currentRoomID + "/online_peers");
+        presenceRef = database.ref("multi_rooms/" + currentRoomID + "/presence_users");
+
+        const murniMeRef = presenceRef.push({ name: userProfileName, isHost: isHost });
+        murniMeRef.onDisconnect().remove();
+
+        document.querySelector('header p').innerText = "Live Virtual Session - Room: " + currentRoomID.toUpperCase();
+        document.getElementById('lobby-screen').style.opacity = '0';
+        setTimeout(() => { document.getElementById('lobby-screen').style.display = 'none'; }, 400);
+        
         loadPlaylist();
         initFirebaseListeners();
     }
 
-    document.getElementById('admin-pass').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') validasiAdmin();
-    });
-
-    // 3. RENDER PLAYLIST PANEL
     function loadPlaylist() {
         const playlistContainer = document.getElementById('playlist-container');
         playlistContainer.innerHTML = '';
@@ -561,23 +835,19 @@
             li.innerHTML = `<i data-lucide="music-2" style="width:16px; color: #ff3333;"></i> <span>${song.title}</span>`;
             
             li.onclick = () => {
-                if (!isHost) {
-                    alert("Kunci Otoritas! Hanya Admin yang berhak memindahkan lagu.");
-                    return;
-                }
+                if (!isHost) { alert("Kunci Otoritas! Hanya Pembuat Room yang berhak memindahkan lagu."); return; }
                 currentSongIndex = idx;
-                perbaruiKondisiRoom(a7xPlaylist[idx].file, 'play');
+                perbaruiKondisiRoom(a7xPlaylist[idx].driveId, 'play');
             };
             playlistContainer.appendChild(li);
         });
         lucide.createIcons();
     }
 
-    // 4. MANAGEMENT PERINTAH SINKRONISASI
-    function perbaruiKondisiRoom(songFile, statusAksi) {
+    function perbaruiKondisiRoom(songDriveId, statusAksi) {
         if (!isHost) return;
         roomRef.set({
-            currentSongFile: songFile,
+            currentSongFile: songDriveId,
             action: statusAksi,
             currentTime: videoPlayer.currentTime,
             timestamp: Date.now()
@@ -588,12 +858,15 @@
         roomRef.on("value", (snapshot) => {
             const data = snapshot.val();
             if (data && videoPlayer) {
-                const targetIdx = a7xPlaylist.findIndex(s => s.file === data.currentSongFile);
+                const targetIdx = a7xPlaylist.findIndex(s => s.driveId === data.currentSongFile);
                 if (targetIdx !== -1) currentSongIndex = targetIdx;
 
+                // Memaksa konversi link streaming rahasia per-room via proxy runtime
+                const linkHasilInject = sirkuitAntiCors(data.currentSongFile);
                 const currentSrc = videoPlayer.getAttribute('src') || "";
+                
                 if (!currentSrc.includes(data.currentSongFile)) {
-                    videoPlayer.src = data.currentSongFile;
+                    videoPlayer.src = linkHasilInject;
                 }
 
                 if (data.action === 'play') {
@@ -613,12 +886,30 @@
             }
         });
 
+        presenceRef.on("value", (snapshot) => {
+            const usersView = document.getElementById("room-users-view");
+            usersView.innerHTML = "";
+            const listUsers = snapshot.val();
+            if(listUsers) {
+                Object.keys(listUsers).forEach((key) => {
+                    const u = listUsers[key];
+                    const badge = document.createElement("span");
+                    badge.className = `member-badge ${u.isHost ? 'admin-tag' : ''}`;
+                    badge.innerHTML = `<i data-lucide="user" style="width:11px;"></i> ${u.name}`;
+                    usersView.appendChild(badge);
+                });
+                lucide.createIcons();
+            }
+        });
+
         if (isHost) {
             setInterval(() => {
                 if (!videoPlayer.paused) {
                     roomRef.update({ currentTime: videoPlayer.currentTime, timestamp: Date.now() });
                 }
             }, 1000);
+            database.ref("rooms_registry/" + currentRoomID).onDisconnect().remove();
+            database.ref("multi_rooms/" + currentRoomID).onDisconnect().remove();
         }
 
         chatRef.limitToLast(30).on("child_added", (snapshot) => {
@@ -626,7 +917,7 @@
             const data = snapshot.val();
             const msgDiv = document.createElement('div');
             msgDiv.className = 'chat-msg';
-            const roleClass = data.name.toLowerCase() === 'admin' ? 'admin' : 'user';
+            const roleClass = data.name.toLowerCase().includes('admin') ? 'admin' : 'user';
             
             msgDiv.innerHTML = `<span class="${roleClass}">${data.name}:</span> ${data.text}`;
             chatBox.appendChild(msgDiv);
@@ -639,23 +930,22 @@
 
     videoPlayer.onended = () => {
         if (isHost) {
-            if (isLooping) { perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].file, 'play'); } else { kontrolVideo('next'); }
+            if (isLooping) { perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].driveId, 'play'); } else { kontrolVideo('next'); }
         }
     };
 
-    // 5. IMPLEMENTASI TOMBOL KONTROL
     function kontrolVideo(aksi) {
-        if (!isHost) { alert("Akses Terkunci! Hanya Admin yang memegang kendali tombol."); return; }
+        if (!isHost) { alert("Akses Terkunci! Hanya Roomaster yang memegang kendali tombol."); return; }
         if (aksi === 'toggle') {
-            if (videoPlayer.paused) { perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].file, 'play'); } else { perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].file, 'pause'); }
+            if (videoPlayer.paused) { perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].driveId, 'play'); } else { perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].driveId, 'pause'); }
         } else if (aksi === 'stop') {
-            perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].file, 'stop');
+            perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].driveId, 'stop');
         } else if (aksi === 'next') {
             currentSongIndex = isShuffled ? Math.floor(Math.random() * a7xPlaylist.length) : (currentSongIndex + 1) % a7xPlaylist.length;
-            perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].file, 'play');
+            perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].driveId, 'play');
         } else if (aksi === 'prev') {
             currentSongIndex = (currentSongIndex - 1 + a7xPlaylist.length) % a7xPlaylist.length;
-            perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].file, 'play');
+            perbaruiKondisiRoom(a7xPlaylist[currentSongIndex].driveId, 'play');
         } else if (aksi === 'loop') {
             isLooping = !isLooping; styleBtn('loop-btn', isLooping);
         } else if (aksi === 'shuffle') {
@@ -669,8 +959,7 @@
         btn.style.boxShadow = active ? '0 0 10px var(--accent-glow)' : 'none';
     }
 
-    // 6. MOSHPIT SHOUTBOX
-    function kirimPesan() {
+    function chatKirim() {
         const nameInput = document.getElementById('chat-name');
         const textInput = document.getElementById('chat-text');
         if(nameInput.value.trim() !== "" && textInput.value.trim() !== "") {
@@ -679,15 +968,15 @@
         }
     }
 
-    document.getElementById('chat-text').addEventListener('keypress', function (e) { if (e.key === 'Enter') kirimPesan(); });
+    // Sambungkan fungsi tombol kirim aslinya
+    function kirimPesan() { chatKirim(); }
+    document.getElementById('chat-text').addEventListener('keypress', function (e) { if (e.key === 'Enter') chatKirim(); });
 
-    // 7. SINKRONISASI LIVE VOICE PEERJS (KEMBALI KE ASLI / AMAN ANTI DENGING)
     function joinSession() {
         const btnJoin = document.querySelector('.btn-join');
         btnJoin.innerText = "MENGHUBUNGKAN...";
         btnJoin.disabled = true;
 
-        // Mengembalikan setelan original sistemmu agar mic jernih dan tidak memicu feedback loop/denging
         navigator.mediaDevices.getUserMedia({ audio: true, video: false })
         .then((stream) => {
             localStream = stream;
@@ -699,7 +988,6 @@
                 btnJoin.innerText = "LIVE VOICE CONNECTED 🔴";
                 btnJoin.style.background = "#00cc44";
                 btnJoin.style.boxShadow = "0 0 15px #00cc44";
-
                 document.getElementById('rec-btn').style.display = 'flex';
                 lucide.createIcons();
             });
@@ -735,19 +1023,16 @@
         }
     }
 
-    // 8. LOGIKA PEREKAM AUDIO INTERNAL (BALANCING MUSIK TANPA MERUBAH INTEGRITAS MIC)
     function toggleMulaiRekam() {
         const recBtn = document.getElementById('rec-btn');
         const recText = document.getElementById('rec-text');
 
         if (!isRecording) {
             recordedChunks = [];
-            
             try {
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const dest = audioContext.createMediaStreamDestination();
 
-                // Memasukkan suara mic kamu murni tanpa booster penguat yang memicu suara aneh
                 if (localStream) {
                     const micSource = audioContext.createMediaStreamSource(localStream);
                     micSource.connect(dest);
@@ -757,57 +1042,36 @@
                     if (!videoPlayer.audioSourceNode) {
                         videoPlayer.audioSourceNode = audioContext.createMediaElementSource(videoPlayer);
                     }
-                    
-                    // Suara instrumen di HP tetap kencang 100% normal biar enak nyanyinya
                     videoPlayer.audioSourceNode.connect(audioContext.destination); 
                     
-                    // 🎛️ KLIP MIXER: Khusus untuk hasil rekaman, volume musik dikecilkan ke 50% (0.5) agar vokal tidak tenggelam
                     const videoGain = audioContext.createGain();
                     videoGain.gain.value = 0.5; 
-                    
                     videoPlayer.audioSourceNode.connect(videoGain);  
                     videoGain.connect(dest);       
                 }
 
                 mediaRecorder = new MediaRecorder(dest.stream);
-                
-                mediaRecorder.ondataavailable = function(e) {
-                    if (e.data.size > 0) {
-                        recordedChunks.push(e.data);
-                    }
-                };
-
+                mediaRecorder.ondataavailable = function(e) { if (e.data.size > 0) recordedChunks.push(e.data); };
                 mediaRecorder.onstop = function() {
                     const blob = new Blob(recordedChunks, { type: 'audio/webm' });
                     const url = URL.createObjectURL(blob);
-                    
                     const downloadLink = document.createElement('a');
                     downloadLink.href = url;
-                    downloadLink.download = `Setlist_Karaoke_A7X_Blitar_${Date.now()}.webm`;
+                    downloadLink.download = `Setlist_Karaoke_Drive_A7X_${Date.now()}.webm`;
                     document.body.appendChild(downloadLink);
                     downloadLink.click(); 
                     document.body.removeChild(downloadLink);
-                    
-                    alert("Rekaman Berhasil Disimpan! Musik otomatis diturunkan 50% di hasil rekaman.");
                 };
-
                 mediaRecorder.start();
                 isRecording = true;
                 recBtn.classList.add('recording');
                 recText.innerText = "Berhenti Rekam";
-                console.log("Proses perekaman panggung dengan redam instrumen otomatis dimulai...");
-            } catch (err) {
-                alert("Browser menolak sistem jahit rekaman: " + err);
-            }
-
+            } catch (err) { alert("Sistem rekam siap: " + err); }
         } else {
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-            }
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
             isRecording = false;
             recBtn.classList.remove('recording');
             recText.innerText = "Rekam Sesi";
-            console.log("Proses perekaman dihentikan.");
         }
     }
 </script>
